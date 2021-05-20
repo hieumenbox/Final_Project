@@ -781,9 +781,9 @@ void setup() {
   Serial.println(WiFi.gatewayIP());
   Blynk.begin(auth, ssid, password, IPAddress(192,168,1,11),8080);
   timer.setInterval(1000L, sendSensor);
-  timer.setInterval(5000L, datevalue);
-  timer.setInterval(5000L, send_data_to_googlesheet);
-  timer.setInterval(5000L, send_data_to_webserver);
+  timer.setInterval(1000L, datevalue);
+  //timer.setInterval(5000L, send_data_to_googlesheet);
+  //timer.setInterval(5000L, send_data_to_webserver);
   timer.setInterval(5000L, peristaltic_pump);
   timer.setInterval(5000L, checkSchedule); 
   attachInterrupt(digitalPinToInterrupt(photoresistor), growlight, CHANGE);
