@@ -7,6 +7,10 @@
 		{
 			"name": "Sencond Project",
 			"path": "Sencond Project"
+		},
+		{
+			"name": "Final_Project",
+			"path": "../../Documents/PlatformIO/Projects/Final_Project"
 		}
 	],
 	"settings": {}
