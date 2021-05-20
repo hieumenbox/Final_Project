@@ -2,7 +2,6 @@
 
 void setup() {
   // put your setup code here, to run once:
-  // sencond project
 }
 
 void loop() {

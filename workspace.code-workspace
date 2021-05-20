@@ -3,6 +3,10 @@
 		{
 			"name": "Test_1",
 			"path": "Test_1"
+		},
+		{
+			"name": "Sencond Project",
+			"path": "Sencond Project"
 		}
 	],
 	"settings": {}
