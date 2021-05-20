@@ -41,8 +41,8 @@
 #include <LiquidCrystal_I2C.h>      //include lcd library
 
 /*-----( Declare Constants )-------------------------------------------------------------------------------------------------------*/
-int motorPin = A0;            //pin that turns on pump motor
-int pHpin = A3;               //pin that sends signals to pH meter
+#define motorPin A0           //pin that turns on pump motor
+#define pHpin A3               //pin that sends signals to pH meter
 int blinkPin = 13;            //LED pin
 float offset = 2.97;          //the offset to account for variability of pH meter
 float offset2 = 0;            //offset after calibration
@@ -75,15 +75,15 @@ void setup()   /*----( SETUP: RUNS ONCE )---------------------------------------
 {
   pinMode(motorPin, OUTPUT);          //set A0 as an output so transistor for pump can be turned on
   pinMode(blinkPin, OUTPUT);          //set 13 to an output so that the LED can be turned on
-  lcd.begin(20, 4);                   //initialize lcd screen 20 x 4
+  lcd_blynkbegin(20, 4);                   //initialize lcd screen 20 x 4
   Serial.begin(9600);                 //initialize serial communication
 
-  lcd.setCursor(0,0);                 //set cursor to first row, first column
-  lcd.print("1) pH Regulator");       //display "1) pH Regulator" on lcd
-  lcd.setCursor(0,1);                 //set cursor to second row down, first column
-  lcd.print("2) pH Meter");           //display "2) pH Meter" on lcd
-  lcd.setCursor(0,3);                 //set cursor to second row down, first column
-  lcd.print("(Use Serial Monitor)");  //tell user to use serial monitor to input choice
+  lcd_blynksetCursor(0,0);                 //set cursor to first row, first column
+  lcd_blynkprint("1) pH Regulator");       //display "1) pH Regulator" on lcd
+  lcd_blynksetCursor(0,1);                 //set cursor to second row down, first column
+  lcd_blynkprint("2) pH Meter");           //display "2) pH Meter" on lcd
+  lcd_blynk.setCursor(0,3);                 //set cursor to second row down, first column
+  lcd_blynk.print("(Use Serial Monitor)");  //tell user to use serial monitor to input choice
   
   while (Serial.available() <= 0)     //if <= 0, there is no input
     {
@@ -112,15 +112,15 @@ void setup()   /*----( SETUP: RUNS ONCE )---------------------------------------
   delay(50);                          //quick delay
   
 again:
-  lcd.clear();                        //clear lcd screen
-  lcd.setCursor(0,0);                 //set cursor to first row, first column
-  lcd.print("Does meter need");       //display "Does meter need" on lcd
-  lcd.setCursor(0,1);                 //set cursor to second row down, first column
-  lcd.print(" calibration?");         //display "calibration?" on lcd
-  lcd.setCursor(3,2);                 //set cursor to third row down, third column
-  lcd.print("Yes? Enter '1'");        //calibration choice
-  lcd.setCursor(3,3);                 //set cursor to fourth row down, third column
-  lcd.print("No?  Enter '2'");        //calibration choice
+  lcd_blynk.clear();                        //clear lcd screen
+  lcd_blynk.setCursor(0,0);                 //set cursor to first row, first column
+  lcd_blynk.print("Does meter need");       //display "Does meter need" on lcd
+  lcd_blynk.setCursor(0,1);                 //set cursor to second row down, first column
+  lcd_blynk.print(" calibration?");         //display "calibration?" on lcd
+  lcd_blynk.setCursor(3,2);                 //set cursor to third row down, third column
+  lcd_blynk.print("Yes? Enter '1'");        //calibration choice
+  lcd_blynk.setCursor(3,3);                 //set cursor to fourth row down, third column
+  lcd_blynk.print("No?  Enter '2'");        //calibration choice
   
   while (Serial.available() <= 0)     //if <= 0, there is no input
     {
@@ -138,12 +138,12 @@ again:
   else if (incomingByte == '2')       //if '2' is pressed (no calibration needed)
     {
       delay(50);                            //quick delay
-      lcd.clear();                          //clear lcd screen
-      lcd.print("Wash pH meter off");       //print out instructions for cleaning of pH meter
-      lcd.setCursor(0,1);
-      lcd.print("with DI water.");
-      lcd.setCursor(0,3);
-      lcd.print("When ready input '1'");
+      lcd_blynk.clear();                          //clear lcd screen
+      lcd_blynk.print("Wash pH meter off");       //print out instructions for cleaning of pH meter
+      lcd_blynk.setCursor(0,1);
+      lcd_blynk.print("with DI water.");
+      lcd_blynk.setCursor(0,3);
+      lcd_blynk.print("When ready input '1'");
       
       while (Serial.available() <= 0)       //while nothing pressed..we don't really need the user to press '1', just any key
        {
@@ -152,12 +152,12 @@ again:
       wasteByte = Serial.read();            //clear serial input
 
       delay(50);                            //quick delay
-      lcd.clear();                          //clear lcd screen
-      lcd.print("Place pH meter in");       //print out instructions for placing pH meter in solution
-      lcd.setCursor(0,1);
-      lcd.print("wanted solution.");
-      lcd.setCursor(0,3);
-      lcd.print("When ready input '1'");
+      lcd_blynk.clear();                          //clear lcd screen
+      lcd_blynk.print("Place pH meter in");       //print out instructions for placing pH meter in solution
+      lcd_blynk.setCursor(0,1);
+      lcd_blynk.print("wanted solution.");
+      lcd_blynk.setCursor(0,3);
+      lcd_blynk.print("When ready input '1'");
       
       while (Serial.available() <= 0)       //while nothing pressed..we don't really need the user to press '1', just any key
         {
@@ -172,41 +172,41 @@ again:
       goto again;                                             //restart calibration question
     }
 
-  lcd.clear();                              //clear screen
+  lcd_blynk.clear();                              //clear screen
 
 inputPH:
   if (statusValue == 1)                     //if '1' was pressed (pH Regulator)
    {
-      lcd.setCursor(0,0);                   //set cursor to first row, first column
-      lcd.print("Enter pH Value you");      //display "Enter pH Value you" on lcd
-      lcd.setCursor(0,1);                   //set cursor to second row down, first column
-      lcd.print("would like reaction");     //display "would like reaction" on lcd
-      lcd.setCursor(0,2);                   //set cursor to third row down, first column
-      lcd.print("to stay at...");           //display "to stay at." on lcd
+      lcd_blynk.setCursor(0,0);                   //set cursor to first row, first column
+      lcd_blynk.print("Enter pH Value you");      //display "Enter pH Value you" on lcd
+      lcd_blynk.setCursor(0,1);                   //set cursor to second row down, first column
+      lcd_blynk.print("would like reaction");     //display "would like reaction" on lcd
+      lcd_blynk.setCursor(0,2);                   //set cursor to third row down, first column
+      lcd_blynk.print("to stay at...");           //display "to stay at." on lcd
       
       while (Serial.available() <= 0)       //if <= 0, there is no input
         {
           //wait until there is incoming serial data
           readPH();                                   //read the current pH value
-          lcd.setCursor(0,3);                         //set cursor to third row down, first column
-          lcd.print("  Current pH: ");                //display "Current pH: " on lcd
-          lcd.print(pHvalue);                         //display current pH   
-          lcd.print(" ");                             //clears extra digit if number before is > 10                          
+          lcd_blynk.setCursor(0,3);                         //set cursor to third row down, first column
+          lcd_blynk.print("  Current pH: ");                //display "Current pH: " on lcd
+          lcd_blynk.print(pHvalue);                         //display current pH   
+          lcd_blynk.print(" ");                             //clears extra digit if number before is > 10                          
           delay(100);                                 //delay for lcd timing
         }
 
       pHregulate = Serial.parseFloat();       //converts the ASCII char from serial input into a float pH value
       delay(50);                              //short delay
-      lcd.clear();                            //clear screen
-      lcd.setCursor(0,0);                     //set cursor to first row down, first column
-      lcd.print("You have entered:");         //display "You have entered:" on lcd
-      lcd.setCursor(6,1);                     //set cursor to second row down, seventh column
-      lcd.print("pH ");                       //display "pH " on lcd
-      lcd.print(pHregulate);                  //display value inputted on lcd
-      lcd.setCursor(0,2);                     //set cursor to third row down, first column
-      lcd.print("Correct? Enter '1'");        //display "Correct? Enter '1'" on lcd
-      lcd.setCursor(0,3);                     //set cursor to fourth row down, first column
-      lcd.print("New pH?  Enter '2'");        //display "New pH? Enter '2'" on lcd
+      lcd_blynk.clear();                            //clear screen
+      lcd_blynk.setCursor(0,0);                     //set cursor to first row down, first column
+      lcd_blynk.print("You have entered:");         //display "You have entered:" on lcd
+      lcd_blynk.setCursor(6,1);                     //set cursor to second row down, seventh column
+      lcd_blynk.print("pH ");                       //display "pH " on lcd
+      lcd_blynk.print(pHregulate);                  //display value inputted on lcd
+      lcd_blynk.setCursor(0,2);                     //set cursor to third row down, first column
+      lcd_blynk.print("Correct? Enter '1'");        //display "Correct? Enter '1'" on lcd
+      lcd_blynk.setCursor(0,3);                     //set cursor to fourth row down, first column
+      lcd_blynk.print("New pH?  Enter '2'");        //display "New pH? Enter '2'" on lcd
 
   redo:
       while (Serial.available() <= 0)     //if <= 0, there is no input
@@ -218,11 +218,11 @@ inputPH:
 
       if (incomingByte == '1')            //if '1' is pressed (correct pH)
         {
-          lcd.clear();                    //clear screen
+          lcd_blynk.clear();                    //clear screen
         }
       else if (incomingByte == '2')       //if '2' is pressed (pH Meter)
         {
-          lcd.clear();                    //clear lcd
+          lcd_blynk.clear();                    //clear lcd
           goto inputPH;                   //go back to new input
         }
       else                                //if something other than '1' or '2' is pressed
@@ -238,10 +238,10 @@ void loop()   /*----( LOOP: RUNS CONSTANTLY )-----------------------------------
   //this code will operate for both regulator and meter states... code within "if" statement only operates under regulator state
   delay(100);                       //small delay
   readPH();                         //read current value of pH                      
-  lcd.setCursor(2,1);               //set cursor to second row down, third column
-  lcd.print("pH Level = ");         //display "pH Level = " on lcd
-  lcd.print(pHvalue);               //display value of pH
-  lcd.print(" ");                   //clears extra digit if number before is > 10
+  lcd_blynk.setCursor(2,1);               //set cursor to second row down, third column
+  lcd_blynk.print("pH Level = ");         //display "pH Level = " on lcd
+  lcd_blynk.print(pHvalue);               //display value of pH
+  lcd_blynk.print(" ");                   //clears extra digit if number before is > 10
   
   if (statusValue == 1)                   //if user wants regulator
     {
@@ -257,10 +257,10 @@ void loop()   /*----( LOOP: RUNS CONSTANTLY )-----------------------------------
               for(int i=0; i < largeAdjust; i++)    //loop for larger pH adjust
                 {
                   readPH();                         //check pH
-                  lcd.setCursor(2,1);               //set cursor to second row down, third column
-                  lcd.print("pH Level = ");         //display "pH Level = " on lcd
-                  lcd.print(pHvalue);               //display value of pH
-                  lcd.print(" ");                   //clears extra digit if number before is > 10
+                  lcd_blynk.setCursor(2,1);               //set cursor to second row down, third column
+                  lcd_blynk.print("pH Level = ");         //display "pH Level = " on lcd
+                  lcd_blynk.print(pHvalue);               //display value of pH
+                  lcd_blynk.print(" ");                   //clears extra digit if number before is > 10
 //                  deltaPH = (pHregulate - pHvalue); //difference between expected pH and actual pH
 //                  if (deltaPH < 1)
 //                    {
@@ -268,11 +268,11 @@ void loop()   /*----( LOOP: RUNS CONSTANTLY )-----------------------------------
 //                      digitalWrite(blinkPin, LOW);  //turn off LED
 //                      goto recheck;                 //recheck how much to pump
 //                    }
-                  lcd.setCursor(2,2);               //center of screen
-                  lcd.print("Regulator Active");    //print "Regulator Active"
+                  lcd_blynk.setCursor(2,2);               //center of screen
+                  lcd_blynk.print("Regulator Active");    //print "Regulator Active"
                   delay(500);                       //half second flash
-                  lcd.setCursor(2,2);               //center of screen
-                  lcd.print("                ");    //clear "Regulator Active"
+                  lcd_blynk.setCursor(2,2);               //center of screen
+                  lcd_blynk.print("                ");    //clear "Regulator Active"
                   delay(500);                       //half second flash
                 }
             }
@@ -281,10 +281,10 @@ void loop()   /*----( LOOP: RUNS CONSTANTLY )-----------------------------------
               for(int i=0; i < smallAdjust; i++)    //loop for smaller pH adjust time
                 {
                   readPH();                         //check pH
-                  lcd.setCursor(2,1);               //set cursor to second row down, third column
-                  lcd.print("pH Level = ");         //display "pH Level = " on lcd
-                  lcd.print(pHvalue);               //display value of pH
-                  lcd.print(" ");                   //clears extra digit if number before is > 10
+                  lcd_blynk.setCursor(2,1);               //set cursor to second row down, third column
+                  lcd_blynk.print("pH Level = ");         //display "pH Level = " on lcd
+                  lcd_blynk.print(pHvalue);               //display value of pH
+                  lcd_blynk.print(" ");                   //clears extra digit if number before is > 10
 //                  deltaPH = (pHregulate - pHvalue); //difference between expected pH and actual pH
 //                  if (deltaPH < 0.3)
 //                    {
@@ -292,17 +292,17 @@ void loop()   /*----( LOOP: RUNS CONSTANTLY )-----------------------------------
 //                      digitalWrite(blinkPin, LOW);  //turn off LED
 //                      goto recheck;                 //recheck how much to pump
 //                    }
-                  lcd.setCursor(2,2);               //center of screen
-                  lcd.print("Regulator Active");    //print "Regulator Active"
+                  lcd_blynk.setCursor(2,2);               //center of screen
+                  lcd_blynk.print("Regulator Active");    //print "Regulator Active"
                   delay(250);                       //quarter second flash
-                  lcd.setCursor(2,2);               //center of screen
-                  lcd.print("Regulator Active");    //print "Regulator Active"
+                  lcd_blynk.setCursor(2,2);               //center of screen
+                  lcd_blynk.print("Regulator Active");    //print "Regulator Active"
                   delay(250);                       //quarter second flash
-                  lcd.setCursor(2,2);               //center of screen
-                  lcd.print("Regulator Active");    //print "Regulator Active"
+                  lcd_blynk.setCursor(2,2);               //center of screen
+                  lcd_blynk.print("Regulator Active");    //print "Regulator Active"
                   delay(250);                       //quarter second flash
-                  lcd.setCursor(2,2);               //center of screen
-                  lcd.print("Regulator Active");    //print "Regulator Active"
+                  lcd_blynk.setCursor(2,2);               //center of screen
+                  lcd_blynk.print("Regulator Active");    //print "Regulator Active"
                   delay(250);                       //quarter second flash
                 }
             }
@@ -312,15 +312,15 @@ void loop()   /*----( LOOP: RUNS CONSTANTLY )-----------------------------------
           for(int i=0; i < delayTime*4; i++)        //delay "delayTime" seconds to allow new solution to mix
                 {
                   readPH();                         //check pH
-                  lcd.setCursor(2,1);               //set cursor to second row down, third column
-                  lcd.print("pH Level = ");         //display "pH Level = " on lcd
-                  lcd.print(pHvalue);               //display value of pH
-                  lcd.print(" ");                   //clears extra digit if number before is > 10
-                  lcd.setCursor(2,2);               //center of screen
-                  lcd.print("Delay for mixing");    //print "Delay for mixing"
+                  lcd_blynk.setCursor(2,1);               //set cursor to second row down, third column
+                  lcd_blynk.print("pH Level = ");         //display "pH Level = " on lcd
+                  lcd_blynk.print(pHvalue);               //display value of pH
+                  lcd_blynk.print(" ");                   //clears extra digit if number before is > 10
+                  lcd_blynk.setCursor(2,2);               //center of screen
+                  lcd_blynk.print("Delay for mixing");    //print "Delay for mixing"
                   delay(100);                       //small delay
                 }
-          lcd.clear();                              //clear lcd
+          lcd_blynk.clear();                              //clear lcd
         }
     }
   
@@ -368,14 +368,14 @@ void readPH()     /*--(Subroutine, reads current value of pH Meter)-------------
 
 void CleanPump()    /*--(Subroutine, cleans pump w/ DI water)-----------------------------------------------------------------------*/
 {
-  lcd.clear();                          //clear lcd screen
-  lcd.print("Place pump tube in");      //print out instructions for cleaning pump before use
-  lcd.setCursor(0,1);
-  lcd.print("DI water & dispenser");
-  lcd.setCursor(0,2);
-  lcd.print("tube in waste glass.");
-  lcd.setCursor(0,3);
-  lcd.print("When ready input '1'");
+  lcd_blynk.clear();                          //clear lcd screen
+  lcd_blynk.print("Place pump tube in");      //print out instructions for cleaning pump before use
+  lcd_blynk.setCursor(0,1);
+  lcd_blynk.print("DI water & dispenser");
+  lcd_blynk.setCursor(0,2);
+  lcd_blynk.print("tube in waste glass.");
+  lcd_blynk.setCursor(0,3);
+  lcd_blynk.print("When ready input '1'");
       
   while (Serial.available() <= 0)       //while nothing pressed..we don't really need the user to press '1', just any key
     {
@@ -383,31 +383,31 @@ void CleanPump()    /*--(Subroutine, cleans pump w/ DI water)-------------------
     }
   wasteByte = Serial.read();            //clear serial input
   delay(500);                           //delay half second
-  lcd.clear();                          //clear screen
-  lcd.setCursor(8,1);                   //center of screen
-  lcd.print("WAIT");                    //print wait
+  lcd_blynk.clear();                          //clear screen
+  lcd_blynk.setCursor(8,1);                   //center of screen
+  lcd_blynk.print("WAIT");                    //print wait
   digitalWrite(motorPin, HIGH);         //turn on the pump motor
   digitalWrite(blinkPin, HIGH);         //turn on the LED
   for(int i=0; i<15; i++)               //loop for 15 secs
     {
-      lcd.setCursor(5,2);               //center of screen
-      lcd.print("Cleaning...");         //print cleaning warning
+      lcd_blynk.setCursor(5,2);               //center of screen
+      lcd_blynk.print("Cleaning...");         //print cleaning warning
       delay(500);                       //half second flash
-      lcd.setCursor(5,2);               //center of screen
-      lcd.print("           ");         //clear "cleaning..."
+      lcd_blynk.setCursor(5,2);               //center of screen
+      lcd_blynk.print("           ");         //clear "cleaning..."
       delay(500);                       //half second flash
     }
   digitalWrite(motorPin, LOW);          //turn off the pump motor
   digitalWrite(blinkPin, LOW);          //turn off the LED
       
-  lcd.clear();                          //clear screen
-  lcd.print("Take pump tube out");      //instructions to clear DI water out of tubes
-  lcd.setCursor(0,1);
-  lcd.print("of DI water and keep");
-  lcd.setCursor(0,2);
-  lcd.print("dispenser in glass.");
-  lcd.setCursor(0,3);
-  lcd.print("When ready input '1'");
+  lcd_blynk.clear();                          //clear screen
+  lcd_blynk.print("Take pump tube out");      //instructions to clear DI water out of tubes
+  lcd_blynk.setCursor(0,1);
+  lcd_blynk.print("of DI water and keep");
+  lcd_blynk.setCursor(0,2);
+  lcd_blynk.print("dispenser in glass.");
+  lcd_blynk.setCursor(0,3);
+  lcd_blynk.print("When ready input '1'");
       
   while (Serial.available() <= 0)       //while nothing pressed..we don't really need the user to press '1', just any key
     {
@@ -415,18 +415,18 @@ void CleanPump()    /*--(Subroutine, cleans pump w/ DI water)-------------------
     }
   wasteByte = Serial.read();            //clear serial input
   delay(500);                           //delay half second
-  lcd.clear();                          //clear screen
-  lcd.setCursor(8,1);                   //center of screen
-  lcd.print("WAIT");                    //print wait
+  lcd_blynk.clear();                          //clear screen
+  lcd_blynk.setCursor(8,1);                   //center of screen
+  lcd_blynk.print("WAIT");                    //print wait
   digitalWrite(motorPin, HIGH);         //turn on the pump motor
   digitalWrite(blinkPin, HIGH);         //turn on the LED
   for(int i=0; i<10; i++)               //loop for 10 secs
     {
-      lcd.setCursor(5,2);               //center of screen
-      lcd.print("Cleaning...");         //print cleaning warning
+      lcd_blynk.setCursor(5,2);               //center of screen
+      lcd_blynk.print("Cleaning...");         //print cleaning warning
       delay(500);                       //half second flash
-      lcd.setCursor(5,2);               //center of screen
-      lcd.print("           ");         //clear "cleaning..."
+      lcd_blynk.setCursor(5,2);               //center of screen
+      lcd_blynk.print("           ");         //clear "cleaning..."
       delay(500);                       //half second flash
     }
   digitalWrite(motorPin, LOW);          //turn off the pump motor
@@ -435,14 +435,14 @@ void CleanPump()    /*--(Subroutine, cleans pump w/ DI water)-------------------
 
 void SetUpPump()      /*--(Subroutine, fills pump with solution)--------------------------------------------------------------------*/
 {
-  lcd.clear();                          //clear lcd screen
-  lcd.print("Place pump tube in");      //print out instructions for setting up pump before use
-  lcd.setCursor(0,1);
-  lcd.print("acid/base & dispense");
-  lcd.setCursor(0,2);
-  lcd.print("tube in reaction.");
-  lcd.setCursor(0,3);
-  lcd.print("When ready input '1'");
+  lcd_blynk.clear();                          //clear lcd screen
+  lcd_blynk.print("Place pump tube in");      //print out instructions for setting up pump before use
+  lcd_blynk.setCursor(0,1);
+  lcd_blynk.print("acid/base & dispense");
+  lcd_blynk.setCursor(0,2);
+  lcd_blynk.print("tube in reaction.");
+  lcd_blynk.setCursor(0,3);
+  lcd_blynk.print("When ready input '1'");
       
   while (Serial.available() <= 0)       //while nothing pressed..we don't really need the user to press '1', just any key
     {
@@ -451,34 +451,34 @@ void SetUpPump()      /*--(Subroutine, fills pump with solution)----------------
   wasteByte = Serial.read();            //clear serial input
   delay(500);                           //delay half second
 
-  lcd.clear();                          //clear screen
-  lcd.setCursor(8,1);                   //center of screen
-  lcd.print("WAIT");                    //print wait
+  lcd_blynk.clear();                          //clear screen
+  lcd_blynk.setCursor(8,1);                   //center of screen
+  lcd_blynk.print("WAIT");                    //print wait
   digitalWrite(motorPin, HIGH);         //turn on the pump motor
   digitalWrite(blinkPin, HIGH);         //turn on the LED
   for(int i=0; i < fillTime; i++)       //loop for enough time to fill tubes with acid/base
     {
-      lcd.setCursor(3,2);               //center of screen
-      lcd.print("Filling Pump...");     //print fill warning
+      lcd_blynk.setCursor(3,2);               //center of screen
+      lcd_blynk.print("Filling Pump...");     //print fill warning
       delay(500);                       //half second flash
-      lcd.setCursor(3,2);               //center of screen
-      lcd.print("               ");     //clear "cleaning..."
+      lcd_blynk.setCursor(3,2);               //center of screen
+      lcd_blynk.print("               ");     //clear "cleaning..."
       delay(500);                       //half second flash
     }
   digitalWrite(motorPin, LOW);          //turn off the pump motor
   digitalWrite(blinkPin, LOW);          //turn off the LED
       
-  lcd.clear();                          //clear screen
+  lcd_blynk.clear();                          //clear screen
 }
 
 void CalibrateMeter()   /*--(Subroutine, calibrates the pH meter w/ potentiometer)--------------------------------------------------*/
 {
-  lcd.clear();                          //clear lcd screen
-  lcd.print("Place pH meter in");       //print out instructions for calibration of pH meter
-  lcd.setCursor(0,1);
-  lcd.print("pH 4 solution...");
-  lcd.setCursor(0,3);
-  lcd.print("When ready input '1'");
+  lcd_blynk.clear();                          //clear lcd screen
+  lcd_blynk.print("Place pH meter in");       //print out instructions for calibration of pH meter
+  lcd_blynk.setCursor(0,1);
+  lcd_blynk.print("pH 4 solution...");
+  lcd_blynk.setCursor(0,3);
+  lcd_blynk.print("When ready input '1'");
       
   while (Serial.available() <= 0)       //while nothing pressed..we don't really need the user to press '1', just any key
     {
@@ -488,31 +488,31 @@ void CalibrateMeter()   /*--(Subroutine, calibrates the pH meter w/ potentiomete
   FlashWait();                          //flash "WAIT" for 3 secs... subroutine
 
   delay(50);                            //quick delay
-  lcd.clear();                          //clear lcd screen
-  lcd.print("Turn ADJ on pH chip");     //print out instructions for calibration of pH meter
-  lcd.setCursor(0,1);
-  lcd.print("until reading is pH4");
-  lcd.setCursor(0,3);
-  lcd.print("When done input '1'");
+  lcd_blynk.clear();                          //clear lcd screen
+  lcd_blynk.print("Turn ADJ on pH chip");     //print out instructions for calibration of pH meter
+  lcd_blynk.setCursor(0,1);
+  lcd_blynk.print("until reading is pH4");
+  lcd_blynk.setCursor(0,3);
+  lcd_blynk.print("When done input '1'");
       
   while (Serial.available() <= 0)       //while nothing pressed..we don't really need the user to press '1', just any key
     {
       readPH();                         //read current pH value
-      lcd.setCursor(2,2);
-      lcd.print("pH Value = ");
-      lcd.print(pHvalue);
-      lcd.print(" ");                   //clears extra digit if number before is > 10
+      lcd_blynk.setCursor(2,2);
+      lcd_blynk.print("pH Value = ");
+      lcd_blynk.print(pHvalue);
+      lcd_blynk.print(" ");                   //clears extra digit if number before is > 10
       delay(100);
     }
   wasteByte = Serial.read();            //clear serial input
 
   delay(50);                            //quick delay
-  lcd.clear();                          //clear lcd screen
-  lcd.print("Wash pH meter off");       //print out instructions for cleaning of pH meter
-  lcd.setCursor(0,1);
-  lcd.print("with DI water.");
-  lcd.setCursor(0,3);
-  lcd.print("When ready input '1'");
+  lcd_blynk.clear();                          //clear lcd screen
+  lcd_blynk.print("Wash pH meter off");       //print out instructions for cleaning of pH meter
+  lcd_blynk.setCursor(0,1);
+  lcd_blynk.print("with DI water.");
+  lcd_blynk.setCursor(0,3);
+  lcd_blynk.print("When ready input '1'");
       
   while (Serial.available() <= 0)       //while nothing pressed..we don't really need the user to press '1', just any key
     {
@@ -521,12 +521,12 @@ void CalibrateMeter()   /*--(Subroutine, calibrates the pH meter w/ potentiomete
   wasteByte = Serial.read();            //clear serial input
 
   delay(50);                            //quick delay
-  lcd.clear();                          //clear lcd screen
-  lcd.print("Place pH meter in");       //print out instructions for calibration of pH meter
-  lcd.setCursor(0,1);
-  lcd.print("pH 7 solution...");
-  lcd.setCursor(0,3);
-  lcd.print("When ready input '1'");
+  lcd_blynk.clear();                          //clear lcd screen
+  lcd_blynk.print("Place pH meter in");       //print out instructions for calibration of pH meter
+  lcd_blynk.setCursor(0,1);
+  lcd_blynk.print("pH 7 solution...");
+  lcd_blynk.setCursor(0,3);
+  lcd_blynk.print("When ready input '1'");
       
   while (Serial.available() <= 0)       //while nothing pressed..we don't really need the user to press '1', just any key
     {
@@ -536,31 +536,31 @@ void CalibrateMeter()   /*--(Subroutine, calibrates the pH meter w/ potentiomete
   FlashWait();                          //flash "WAIT" for 3 secs... subroutine
   
   delay(50);                            //quick delay
-  lcd.clear();                          //clear lcd screen
-  lcd.print("Turn ADJ on pH chip");     //print out instructions for calibration of pH meter
-  lcd.setCursor(0,1);
-  lcd.print("until reading is pH7");
-  lcd.setCursor(0,3);
-  lcd.print("When done input '1'");
+  lcd_blynk.clear();                          //clear lcd screen
+  lcd_blynk.print("Turn ADJ on pH chip");     //print out instructions for calibration of pH meter
+  lcd_blynk.setCursor(0,1);
+  lcd_blynk.print("until reading is pH7");
+  lcd_blynk.setCursor(0,3);
+  lcd_blynk.print("When done input '1'");
       
   while (Serial.available() <= 0)       //while nothing pressed..we don't really need the user to press '1', just any key
     {
       readPH();                         //read current pH value 
-      lcd.setCursor(2,2);
-      lcd.print("pH Value = ");
-      lcd.print(pHvalue);
-      lcd.print(" ");                   //clears extra digit if number before is > 10
+      lcd_blynk.setCursor(2,2);
+      lcd_blynk.print("pH Value = ");
+      lcd_blynk.print(pHvalue);
+      lcd_blynk.print(" ");                   //clears extra digit if number before is > 10
       delay(100);
     }
   wasteByte = Serial.read();            //clear serial input  
 
   delay(50);                            //quick delay
-  lcd.clear();                          //clear lcd screen
-  lcd.print("Wash pH meter off");       //print out instructions for cleaning of pH meter
-  lcd.setCursor(0,1);
-  lcd.print("with DI water.");
-  lcd.setCursor(0,3);
-  lcd.print("When ready input '1'");
+  lcd_blynk.clear();                          //clear lcd screen
+  lcd_blynk.print("Wash pH meter off");       //print out instructions for cleaning of pH meter
+  lcd_blynk.setCursor(0,1);
+  lcd_blynk.print("with DI water.");
+  lcd_blynk.setCursor(0,3);
+  lcd_blynk.print("When ready input '1'");
       
   while (Serial.available() <= 0)       //while nothing pressed..we don't really need the user to press '1', just any key
     {
@@ -569,12 +569,12 @@ void CalibrateMeter()   /*--(Subroutine, calibrates the pH meter w/ potentiomete
   wasteByte = Serial.read();            //clear serial input
 
   delay(50);                            //quick delay
-  lcd.clear();                          //clear lcd screen
-  lcd.print("Place pH meter in");       //print out instructions for placing pH meter in solution
-  lcd.setCursor(0,1);
-  lcd.print("wanted solution.");
-  lcd.setCursor(0,3);
-  lcd.print("When ready input '1'");
+  lcd_blynk.clear();                          //clear lcd screen
+  lcd_blynk.print("Place pH meter in");       //print out instructions for placing pH meter in solution
+  lcd_blynk.setCursor(0,1);
+  lcd_blynk.print("wanted solution.");
+  lcd_blynk.setCursor(0,3);
+  lcd_blynk.print("When ready input '1'");
       
   while (Serial.available() <= 0)       //while nothing pressed..we don't really need the user to press '1', just any key
     {
@@ -588,23 +588,23 @@ void FlashWait()      /*--(Subroutine, flashes "WAIT" for a delay)--------------
 {
   for(int i=0; i<3; i++)                //loop for 3 secs
     {
-      lcd.setCursor(8,2);               //center of screen
-      lcd.print("WAIT");                //print wait
+      lcd_blynk.setCursor(8,2);               //center of screen
+      lcd_blynk.print("WAIT");                //print wait
       delay(500);                       //half second flash
-      lcd.setCursor(8,2);               //center of screen
-      lcd.print("           ");         //clear "WAIT"
+      lcd_blynk.setCursor(8,2);               //center of screen
+      lcd_blynk.print("           ");         //clear "WAIT"
       delay(500);                       //half second flash
     }
 }
 
 void CalibrateMeter2()   /*--(Subroutine, calibrates the pH meter using system of equations)----------------------------------------*/
 {
-  lcd.clear();                          //clear lcd screen
-  lcd.print("Place pH meter in");       //print out instructions for calibration of pH meter
-  lcd.setCursor(0,1);
-  lcd.print("pH 4 solution...");
-  lcd.setCursor(0,3);
-  lcd.print("When ready input '1'");
+  lcd_blynk.clear();                          //clear lcd screen
+  lcd_blynk.print("Place pH meter in");       //print out instructions for calibration of pH meter
+  lcd_blynk.setCursor(0,1);
+  lcd_blynk.print("pH 4 solution...");
+  lcd_blynk.setCursor(0,3);
+  lcd_blynk.print("When ready input '1'");
       
   while (Serial.available() <= 0)       //while nothing pressed..we don't really need the user to press '1', just any key
     {
@@ -614,31 +614,31 @@ void CalibrateMeter2()   /*--(Subroutine, calibrates the pH meter using system o
   FlashWait();                          //flash "WAIT" for 3 secs... subroutine
 
   delay(50);                            //quick delay
-  lcd.clear();                          //clear lcd screen
-  lcd.setCursor(0,0);                   //print out instructions for calibration of pH meter
-  lcd.print("Wait for calibration");    
+  lcd_blynk.clear();                          //clear lcd screen
+  lcd_blynk.setCursor(0,0);                   //print out instructions for calibration of pH meter
+  lcd_blynk.print("Wait for calibration");    
       
   for (double i=100; i>0; i--)          //read values for 10 seconds
     {
       readPH();                         //read current pH value
       pH4val = pHvalue;                 //set equal to variable for this pH
-      lcd.setCursor(0,2);               //set to 3rd row
-      lcd.print("Time remaining: ");    //display time remaining
-      lcd.print(i/10, 1);               //calculates the time left for calibration
-      lcd.setCursor(19,2);              //set cursor to second decimal place of time
-      lcd.print(" ");                   //erase second decimal place to only display tenths place
-      lcd.setCursor(2,3);               //set to bottom line
-      lcd.print("pH Reading: ");        //display current reading
-      lcd.print(pHvalue);               //current reading
+      lcd_blynk.setCursor(0,2);               //set to 3rd row
+      lcd_blynk.print("Time remaining: ");    //display time remaining
+      lcd_blynk.print(i/10, 1);               //calculates the time left for calibration
+      lcd_blynk.setCursor(19,2);              //set cursor to second decimal place of time
+      lcd_blynk.print(" ");                   //erase second decimal place to only display tenths place
+      lcd_blynk.setCursor(2,3);               //set to bottom line
+      lcd_blynk.print("pH Reading: ");        //display current reading
+      lcd_blynk.print(pHvalue);               //current reading
     }
 
   delay(50);                            //quick delay
-  lcd.clear();                          //clear lcd screen
-  lcd.print("Wash pH meter off");       //print out instructions for cleaning of pH meter
-  lcd.setCursor(0,1);
-  lcd.print("with DI water.");
-  lcd.setCursor(0,3);
-  lcd.print("When ready input '1'");
+  lcd_blynk.clear();                          //clear lcd screen
+  lcd_blynk.print("Wash pH meter off");       //print out instructions for cleaning of pH meter
+  lcd_blynk.setCursor(0,1);
+  lcd_blynk.print("with DI water.");
+  lcd_blynk.setCursor(0,3);
+  lcd_blynk.print("When ready input '1'");
       
   while (Serial.available() <= 0)       //while nothing pressed..we don't really need the user to press '1', just any key
     {
@@ -647,12 +647,12 @@ void CalibrateMeter2()   /*--(Subroutine, calibrates the pH meter using system o
   wasteByte = Serial.read();            //clear serial input
 
   delay(50);                            //quick delay
-  lcd.clear();                          //clear lcd screen
-  lcd.print("Place pH meter in");       //print out instructions for calibration of pH meter
-  lcd.setCursor(0,1);
-  lcd.print("pH 7 solution...");
-  lcd.setCursor(0,3);
-  lcd.print("When ready input '1'");
+  lcd_blynk.clear();                          //clear lcd screen
+  lcd_blynk.print("Place pH meter in");       //print out instructions for calibration of pH meter
+  lcd_blynk.setCursor(0,1);
+  lcd_blynk.print("pH 7 solution...");
+  lcd_blynk.setCursor(0,3);
+  lcd_blynk.print("When ready input '1'");
       
   while (Serial.available() <= 0)       //while nothing pressed..we don't really need the user to press '1', just any key
     {
@@ -662,31 +662,31 @@ void CalibrateMeter2()   /*--(Subroutine, calibrates the pH meter using system o
   FlashWait();                          //flash "WAIT" for 3 secs... subroutine
 
   delay(50);                            //quick delay
-  lcd.clear();                          //clear lcd screen
-  lcd.setCursor(0,0);                   //print out instructions for calibration of pH meter
-  lcd.print("Wait for calibration");    
+  lcd_blynk.clear();                          //clear lcd screen
+  lcd_blynk.setCursor(0,0);                   //print out instructions for calibration of pH meter
+  lcd_blynk.print("Wait for calibration");    
       
   for (double i=100; i>0; i--)          //read values for 10 seconds
     {
       readPH();                         //read current pH value
       pH7val = pHvalue;                 //set equal to variable for this pH
-      lcd.setCursor(0,2);               //set to 3rd row
-      lcd.print("Time remaining: ");    //display time remaining
-      lcd.print(i/10, 1);               //calculates the time left for calibration
-      lcd.setCursor(19,2);              //set cursor to second decimal place of time
-      lcd.print(" ");                   //erase second decimal place to only display tenths place
-      lcd.setCursor(2,3);               //set to bottom line
-      lcd.print("pH Reading: ");        //display current reading
-      lcd.print(pHvalue);               //current reading
+      lcd_blynk.setCursor(0,2);               //set to 3rd row
+      lcd_blynk.print("Time remaining: ");    //display time remaining
+      lcd_blynk.print(i/10, 1);               //calculates the time left for calibration
+      lcd_blynk.setCursor(19,2);              //set cursor to second decimal place of time
+      lcd_blynk.print(" ");                   //erase second decimal place to only display tenths place
+      lcd_blynk.setCursor(2,3);               //set to bottom line
+      lcd_blynk.print("pH Reading: ");        //display current reading
+      lcd_blynk.print(pHvalue);               //current reading
     }
 
   delay(50);                            //quick delay
-  lcd.clear();                          //clear lcd screen
-  lcd.print("Wash pH meter off");       //print out instructions for cleaning of pH meter
-  lcd.setCursor(0,1);
-  lcd.print("with DI water.");
-  lcd.setCursor(0,3);
-  lcd.print("When ready input '1'");
+  lcd_blynk.clear();                          //clear lcd screen
+  lcd_blynk.print("Wash pH meter off");       //print out instructions for cleaning of pH meter
+  lcd_blynk.setCursor(0,1);
+  lcd_blynk.print("with DI water.");
+  lcd_blynk.setCursor(0,3);
+  lcd_blynk.print("When ready input '1'");
       
   while (Serial.available() <= 0)       //while nothing pressed..we don't really need the user to press '1', just any key
     {
@@ -695,12 +695,12 @@ void CalibrateMeter2()   /*--(Subroutine, calibrates the pH meter using system o
   wasteByte = Serial.read();            //clear serial input
 
   delay(50);                            //quick delay
-  lcd.clear();                          //clear lcd screen
-  lcd.print("Place pH meter in");       //print out instructions for calibration of pH meter
-  lcd.setCursor(0,1);
-  lcd.print("pH 10 solution...");
-  lcd.setCursor(0,3);
-  lcd.print("When ready input '1'");
+  lcd_blynk.clear();                          //clear lcd screen
+  lcd_blynk.print("Place pH meter in");       //print out instructions for calibration of pH meter
+  lcd_blynk.setCursor(0,1);
+  lcd_blynk.print("pH 10 solution...");
+  lcd_blynk.setCursor(0,3);
+  lcd_blynk.print("When ready input '1'");
       
   while (Serial.available() <= 0)       //while nothing pressed..we don't really need the user to press '1', just any key
     {
@@ -710,31 +710,31 @@ void CalibrateMeter2()   /*--(Subroutine, calibrates the pH meter using system o
   FlashWait();                          //flash "WAIT" for 3 secs... subroutine
   
   delay(50);                            //quick delay
-  lcd.clear();                          //clear lcd screen
-  lcd.setCursor(0,0);                   //print out instructions for calibration of pH meter
-  lcd.print("Wait for calibration");    
+  lcd_blynk.clear();                          //clear lcd screen
+  lcd_blynk.setCursor(0,0);                   //print out instructions for calibration of pH meter
+  lcd_blynk.print("Wait for calibration");    
       
   for (double i=100; i>0; i--)          //read values for 10 seconds
     {
       readPH();                         //read current pH value
       pH10val = pHvalue;                //set equal to variable for this pH
-      lcd.setCursor(0,2);               //set to 3rd row
-      lcd.print("Time remaining: ");    //display time remaining
-      lcd.print(i/10, 1);               //calculates the time left for calibration
-      lcd.setCursor(19,2);              //set cursor to second decimal place of time
-      lcd.print(" ");                   //erase second decimal place to only display tenths place
-      lcd.setCursor(2,3);               //set to bottom line
-      lcd.print("pH Reading: ");        //display current reading
-      lcd.print(pHvalue);               //current reading
+      lcd_blynk.setCursor(0,2);               //set to 3rd row
+      lcd_blynk.print("Time remaining: ");    //display time remaining
+      lcd_blynk.print(i/10, 1);               //calculates the time left for calibration
+      lcd_blynk.setCursor(19,2);              //set cursor to second decimal place of time
+      lcd_blynk.print(" ");                   //erase second decimal place to only display tenths place
+      lcd_blynk.setCursor(2,3);               //set to bottom line
+      lcd_blynk.print("pH Reading: ");        //display current reading
+      lcd_blynk.print(pHvalue);               //current reading
     }
 
   delay(50);                            //quick delay
-  lcd.clear();                          //clear lcd screen
-  lcd.print("Wash pH meter off");       //print out instructions for cleaning of pH meter
-  lcd.setCursor(0,1);
-  lcd.print("with DI water.");
-  lcd.setCursor(0,3);
-  lcd.print("When ready input '1'");
+  lcd_blynk.clear();                          //clear lcd screen
+  lcd_blynk.print("Wash pH meter off");       //print out instructions for cleaning of pH meter
+  lcd_blynk.setCursor(0,1);
+  lcd_blynk.print("with DI water.");
+  lcd_blynk.setCursor(0,3);
+  lcd_blynk.print("When ready input '1'");
       
   while (Serial.available() <= 0)       //while nothing pressed..we don't really need the user to press '1', just any key
     {
@@ -743,12 +743,12 @@ void CalibrateMeter2()   /*--(Subroutine, calibrates the pH meter using system o
   wasteByte = Serial.read();            //clear serial input
 
   delay(50);                            //quick delay
-  lcd.clear();                          //clear lcd screen
-  lcd.print("Place pH meter in");       //print out instructions for placing pH meter in solution
-  lcd.setCursor(0,1);
-  lcd.print("wanted solution.");
-  lcd.setCursor(0,3);
-  lcd.print("When ready input '1'");
+  lcd_blynk.clear();                          //clear lcd screen
+  lcd_blynk.print("Place pH meter in");       //print out instructions for placing pH meter in solution
+  lcd_blynk.setCursor(0,1);
+  lcd_blynk.print("wanted solution.");
+  lcd_blynk.setCursor(0,3);
+  lcd_blynk.print("When ready input '1'");
       
   while (Serial.available() <= 0)       //while nothing pressed..we don't really need the user to press '1', just any key
     {
