@@ -486,7 +486,7 @@ void CalibrateMeter2()
 {
 
   lcd_blynk.clear();                          //clear lcd screen
-  lcd_blynk.print(0, 0, "Place pH meter"); //print out instructions for calibration of pH meter
+  lcd_blynk.print(1, 0, "Place pH meter"); //print out instructions for calibration of pH meter
   lcd_blynk.print(0, 1, "in pH 4 solution");
   delay(3000);
   lcd_blynk.clear();
@@ -506,7 +506,7 @@ void CalibrateMeter2()
   delay(50);         //quick delay
   lcd_blynk.clear(); //clear lcd screen
   //lcd_blynk.setCursor(0,0);                   //print out instructions for calibration of pH meter
-  lcd_blynk.print(0, 0, "Wait for calib");
+  lcd_blynk.print(2, 0, "Wait for calib");
   delay(1000);
   for (double i = 10; i > 0; i--) //read values for 10 seconds
   {                               //read current pH value
@@ -522,9 +522,9 @@ void CalibrateMeter2()
   delay(50); //quick delay
 
   lcd_blynk.clear();                          //clear lcd screen
-  lcd_blynk.print(0, 0, "Wash pH meter"); //print out instructions for cleaning of pH meter
+  lcd_blynk.print(1, 0, "Wash pH meter"); //print out instructions for cleaning of pH meter
   //lcd_blynk.setCursor(0,1);
-  lcd_blynk.print(0, 1, "with DI water.");
+  lcd_blynk.print(1, 1, "with DI water.");
   //lcd_blynk.setCursor(0,3);
   delay(3000);
   lcd_blynk.clear();
@@ -539,7 +539,7 @@ void CalibrateMeter2()
 
   delay(50);                                  //quick delay
   lcd_blynk.clear();                          //clear lcd screen
-  lcd_blynk.print(0, 0, "Place pH meter"); //print out instructions for calibration of pH meter
+  lcd_blynk.print(1, 0, "Place pH meter"); //print out instructions for calibration of pH meter
   lcd_blynk.print(0, 1, "in pH 7 solution");
   delay(3000);
   lcd_blynk.clear();
@@ -571,7 +571,7 @@ void CalibrateMeter2()
 
   delay(50);                                  //quick delay
   lcd_blynk.clear();                          //clear lcd screen
-  lcd_blynk.print(0, 0, "Wash pH meter"); //print out instructions for cleaning of pH meter
+  lcd_blynk.print(1, 0, "Wash pH meter"); //print out instructions for cleaning of pH meter
                                               //lcd_blynk.setCursor(0,1);
   lcd_blynk.print(2, 1, "with DI water.");
   //lcd_blynk.setCursor(0,3);
@@ -589,7 +589,7 @@ void CalibrateMeter2()
 
   delay(50);                                  //quick delay
   lcd_blynk.clear();                          //clear lcd screen
-  lcd_blynk.print(0, 0, "Place pH meter"); //print out instructions for calibration of pH meter
+  lcd_blynk.print(1, 0, "Place pH meter"); //print out instructions for calibration of pH meter
   lcd_blynk.print(0, 1, "in pH 10 solution");
   delay(3000);
   lcd_blynk.clear();
@@ -606,7 +606,7 @@ void CalibrateMeter2()
 
   delay(50);         //quick delay
   lcd_blynk.clear(); //clear lcd screen
-  lcd_blynk.print(0, 0, "Wait for calib");
+  lcd_blynk.print(2, 0, "Wait for calib");
   delay(1000);
   for (double i = 10; i > 0; i--) //read values for 10 seconds
   {                               //read current pH value
@@ -622,8 +622,8 @@ void CalibrateMeter2()
   delay(50); //quick delay
 
   lcd_blynk.clear();                          //clear lcd screen
-  lcd_blynk.print(0, 0, "Wash pH meter"); //print out instructions for cleaning of pH meter
-  lcd_blynk.print(2, 1, "with DI water.");
+  lcd_blynk.print(1, 0, "Wash pH meter"); //print out instructions for cleaning of pH meter
+  lcd_blynk.print(2, 1, "with DI water");
   delay(3000);
   lcd_blynk.clear();
   lcd_blynk.print(3, 0, "When ready ");
@@ -636,8 +636,8 @@ void CalibrateMeter2()
 
   delay(50);                                  //quick delay
   lcd_blynk.clear();                          //clear lcd screen
-  lcd_blynk.print(0, 0, "Place pH meter in"); //print out instructions for placing pH meter in solution
-  lcd_blynk.print(0, 1, "wanted solution.");
+  lcd_blynk.print(1, 0, "Place pH meter"); //print out instructions for placing pH meter in solution
+  lcd_blynk.print(0, 1, "in wanted solution.");
   delay(3000);
   lcd_blynk.clear();
   lcd_blynk.print(3, 0, "When ready ");
