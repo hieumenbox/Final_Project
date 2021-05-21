@@ -3,6 +3,9 @@
 		{
 			"name": "Sencond Project",
 			"path": "Sencond Project"
+		},
+		{
+			"path": "test_pH"
 		}
 	],
 	"settings": {
