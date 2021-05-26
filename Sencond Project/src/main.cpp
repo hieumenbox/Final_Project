@@ -14,14 +14,18 @@
 #include <WidgetRTC.h>
 
 #define DHTPIN D3
-#define pump D4
+#define fan_pin D4
 #define pump_a D5
 #define pump_b D6
 #define photoresistor D7
-#define float_sensor D8
+#define grow_light_pin D8
 
-#define grow_light_pin 9
-#define fan_pin 10
+
+
+#define float_sensor 9
+
+
+#define pump 10
 
 #define DHTTYPE DHT22
 
@@ -1005,9 +1009,9 @@ void setup()
   Serial.println(WiFi.gatewayIP());
   Blynk.begin(auth, ssid, password, IPAddress(192, 168, 1, 11), 8080);
   timer.setInterval(1000L, sendSensor);
-  timer.setInterval(1000L, datevalue);
-  //timer.setInterval(5000L, send_data_to_googlesheet);
-  timer.setInterval(5000L, send_data_to_webserver);
+  timer.setInterval(10000L, datevalue);
+  timer.setInterval(10000L, send_data_to_googlesheet);
+  timer.setInterval(10000L, send_data_to_webserver);
   timer.setInterval(5000L, peristaltic_pump);
   timer.setInterval(5000L, checkSchedule);
   attachInterrupt(digitalPinToInterrupt(photoresistor), growlight, CHANGE);
