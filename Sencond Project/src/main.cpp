@@ -20,7 +20,7 @@
 #define photoresistor D7
 #define grow_light_pin D8
 
-#define float_sensor D8
+#define float_sensor D9
 
 #define pump 10
 
@@ -232,19 +232,25 @@ void checkSchedule()
         Serial.println("Schedule started");
         //for example light up a LED at virtual pin 40
         Blynk.virtualWrite(V60, 200); //LED brightness runs from 0(off) to 255 (brightest)
+        digitalWrite(grow_light_pin, HIGH);
       }
       if (nowseconds >= startseconds[nSchedule] - 3 && nowseconds <= stopseconds[nSchedule] + 3)
       {
         Blynk.virtualWrite(V60, 200);
+        digitalWrite(grow_light_pin, HIGH);
       }
       else
-        Blynk.virtualWrite(V60, 0);
+        {
+          Blynk.virtualWrite(V60, 0);
+          digitalWrite(grow_light_pin, LOW);
+        }
 
       if (nowseconds >= stopseconds[nSchedule] - 3 && nowseconds <= stopseconds[nSchedule] + 3)
       {
         //PUT YOUR STOP ACTIVITY CODE HERE!!
         Serial.println("Schedule ended");
         Blynk.virtualWrite(V60, 0);
+        digitalWrite(grow_light_pin, LOW);
       } //seconds
     }
     else
@@ -879,17 +885,28 @@ void send_data_to_googlesheet()
 }
 void send_data_to_webserver()
 {
-  float h = dht.readHumidity();
-  float t = dht.readTemperature(); // or dht.readTemperature(true) for Fahrenheit
-
-  if (isnan(h) || isnan(t))
+  // Nếu phát hiện 3 bất thường liên tục thì đưa ra trạng thái dừng hệ thống
+  if (count == 3)
   {
-    t = 50;
-    h = 100;
-    Serial.println("Failed to read from DHT sensor!");
-    //return;
+    stop_system = 1;
+    led_stop_system.on();
+    Blynk.notify("Cảnh báo: Tạm dừng hệ thống ");
   }
+  else
+  {
+    stop_system = 0;
+    led_stop_system.off();
+  }
+
+  Serial.print("count");
+  Serial.println(count);
+  Serial.print("pre_count = ");
+  Serial.println(pre_count);
+  Serial.print("stop_system =");
+  Serial.println(stop_system);
+
   // Nếu ack button được nhấn và error_count = 3 thì gán gia trị cho toàn bộ value
+
   if ((ack_temp == 1) && (stop_system == 1))
   {
     for (int i = 0; i < n; i++)
@@ -899,7 +916,9 @@ void send_data_to_webserver()
     ack_temp = 0;
     stop_system = 0;
   }
+
   // Nếu status từ bất thường trở về bình thường thì gán giá trị bt cho toàn bộ value
+
   if ((pre_count == 1) && (count == 0))
   {
     for (int i = 0; i < n; i++)
@@ -936,9 +955,9 @@ void send_data_to_webserver()
     { //Check WiFi connection status
 
       HTTPClient http; //Declare an object of class HTTPClient
-      http.begin("http://192.168.1.2:6868/predict?value1=" + String(a[0], 2) + "&value2=" + String(a[1], 2) + "&value3=" + String(a[2], 2) + "&value4=" + String(a[3], 2) + "&value5=" + String(a[4], 2) + "&value6=" + String(a[5], 2) + "&value7=" + String(a[6], 2) + "&value8=" + String(a[7], 2) + "&value9=" + String(a[8], 2) + "&value10=" + String(a[9], 2));
+      http.begin("http://192.168.1.11:6868/predict?value1=" + String(a[0], 2) + "&value2=" + String(a[1], 2) + "&value3=" + String(a[2], 2) + "&value4=" + String(a[3], 2) + "&value5=" + String(a[4], 2) + "&value6=" + String(a[5], 2) + "&value7=" + String(a[6], 2) + "&value8=" + String(a[7], 2) + "&value9=" + String(a[8], 2) + "&value10=" + String(a[9], 2));
       String test_code;
-      test_code = ("http://192.168.1.2:6868/predict?value1=" + String(a[0], 2) + "&value2=" + String(a[1], 2) + "&value3=" + String(a[2], 2) + "&value4=" + String(a[3], 2) + "&value5=" + String(a[4], 2) + "&value6=" + String(a[5], 2) + "&value7=" + String(a[6], 2) + "&value8=" + String(a[7], 2) + "&value9=" + String(a[8], 2) + "&value10=" + String(a[9], 2));
+      test_code = ("http://192.168.1.11:6868/predict?value1=" + String(a[0], 2) + "&value2=" + String(a[1], 2) + "&value3=" + String(a[2], 2) + "&value4=" + String(a[3], 2) + "&value5=" + String(a[4], 2) + "&value6=" + String(a[5], 2) + "&value7=" + String(a[6], 2) + "&value8=" + String(a[7], 2) + "&value9=" + String(a[8], 2) + "&value10=" + String(a[9], 2));
       Serial.println(test_code);
       int httpCode = http.GET(); //Send the request
       if (httpCode > 0)
@@ -991,8 +1010,10 @@ void send_data_to_webserver()
           led_stop_system.on();
         }
         else
+        {
           stop_system = 0;
           led_stop_system.off();
+        }
 
         Serial.print("count");
         Serial.println(count);
@@ -1084,8 +1105,8 @@ void setup()
   pinMode(pump, OUTPUT);
   pinMode(photoresistor, INPUT_PULLUP);
   pinMode(float_sensor, INPUT_PULLUP);
-  //pinMode(fan_pin, OUTPUT);
-  //pinMode(grow_light_pin, OUTPUT);
+  pinMode(fan_pin, OUTPUT);
+  pinMode(grow_light_pin, OUTPUT);
   //
   Serial.begin(115200);
   delay(100);
@@ -1118,7 +1139,7 @@ void setup()
   timer.setInterval(5000L, peristaltic_pump);
   timer.setInterval(5000L, checkSchedule);
   attachInterrupt(digitalPinToInterrupt(photoresistor), growlight, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(float_sensor), pump_water, CHANGE);
+  //attachInterrupt(digitalPinToInterrupt(float_sensor), pump_water, CHANGE);
 }
 
 void loop()
