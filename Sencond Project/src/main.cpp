@@ -86,6 +86,9 @@ float range_ph_low_danger = 5.0;
 // prediction variables
 float test_value, pred_value, mae, threshold;
 String status_pH_sensor;
+int ack, ack_temp, count;
+int stop_system;
+int pre_count;
 // Calibrate pH sensor
 int status_calib;
 float ph4val;
@@ -120,6 +123,8 @@ WidgetLED led_pump_base(V51);
 WidgetLED led_pump(V52);
 WidgetLED led_growlight(V53);
 WidgetLED led_fan(V54);
+WidgetLED led_alarm(V55);
+WidgetLED led_stop_system(V56);
 
 void setSchedule(const BlynkParam &param, int nSchedule)
 {
@@ -717,6 +722,14 @@ BLYNK_WRITE(V76)
   //   CalibrateMeter2();
   // }
 }
+BLYNK_WRITE(V77)
+{
+  ack = param.asInt();
+  if (ack == 1)
+  {
+    ack_temp = 1;
+  }
+}
 void display_lcd(float t, float h, float phValue, int float_sensor, int photoresistor)
 {
   //Page 1
@@ -765,7 +778,7 @@ void sendSensor()
   }
   Serial.println(int(t));
   Serial.println(int(MAX_AIR_TEMP_ALM));
-  if (int(t) >= MAX_AIR_TEMP_ALM)
+  if (t >= float(MAX_AIR_TEMP_ALM))
   {
     Blynk.notify("Temperature is too high: ");
     turn_on_fan();
@@ -777,6 +790,13 @@ void sendSensor()
   if (t <= float(MIN_AIR_TEMP_ALM))
   {
     Blynk.notify("Temperature is too low: ");
+    led_growlight.on();
+    digitalWrite(grow_light_pin, HIGH);
+  }
+  else
+  {
+    led_growlight.off();
+    digitalWrite(grow_light_pin, LOW);
   }
 
   if (h >= MAX_AIR_HUMIDITY)
@@ -869,6 +889,25 @@ void send_data_to_webserver()
     Serial.println("Failed to read from DHT sensor!");
     //return;
   }
+  // Nếu ack button được nhấn và error_count = 3 thì gán gia trị cho toàn bộ value
+  if ((ack_temp == 1) && (stop_system == 1))
+  {
+    for (int i = 0; i < n; i++)
+    {
+      a[i] = phValue;
+    }
+    ack_temp = 0;
+    stop_system = 0;
+  }
+  // Nếu status từ bất thường trở về bình thường thì gán giá trị bt cho toàn bộ value
+  if ((pre_count == 1) && (count == 0))
+  {
+    for (int i = 0; i < n; i++)
+    {
+      a[i] = phValue;
+    }
+    pre_count = 0;
+  }
   for (int i = 0; i < n; i++)
   {
     if (a[i] == 0)
@@ -886,58 +925,85 @@ void send_data_to_webserver()
     Serial.print(a[i]);
     Serial.print(" ");
   }
+
   Serial.println();
+  Serial.print("stop_system =");
+  Serial.println(stop_system);
 
-  if (WiFi.status() == WL_CONNECTED)
-  { //Check WiFi connection status
+  if (stop_system == 0)
+  {
+    if (WiFi.status() == WL_CONNECTED)
+    { //Check WiFi connection status
 
-    HTTPClient http; //Declare an object of class HTTPClient
+      HTTPClient http; //Declare an object of class HTTPClient
+      http.begin("http://192.168.1.2:6868/predict?value1=" + String(a[0], 2) + "&value2=" + String(a[1], 2) + "&value3=" + String(a[2], 2) + "&value4=" + String(a[3], 2) + "&value5=" + String(a[4], 2) + "&value6=" + String(a[5], 2) + "&value7=" + String(a[6], 2) + "&value8=" + String(a[7], 2) + "&value9=" + String(a[8], 2) + "&value10=" + String(a[9], 2));
+      String test_code;
+      test_code = ("http://192.168.1.2:6868/predict?value1=" + String(a[0], 2) + "&value2=" + String(a[1], 2) + "&value3=" + String(a[2], 2) + "&value4=" + String(a[3], 2) + "&value5=" + String(a[4], 2) + "&value6=" + String(a[5], 2) + "&value7=" + String(a[6], 2) + "&value8=" + String(a[7], 2) + "&value9=" + String(a[8], 2) + "&value10=" + String(a[9], 2));
+      Serial.println(test_code);
+      int httpCode = http.GET(); //Send the request
+      if (httpCode > 0)
+      { //Check the returning code
 
-    http.begin("http://192.168.1.11:6868/predict?value1=" + String(a[0], 2) + "&value2=" + String(a[1], 2) + "&value3=" + String(a[2], 2) + "&value4=" + String(a[3], 2) + "&value5=" + String(a[4], 2) + "&value6=" + String(a[5], 2) + "&value7=" + String(a[6], 2) + "&value8=" + String(a[7], 2) + "&value9=" + String(a[8], 2) + "&value10=" + String(a[9], 2));
-    String test_code;
-    test_code = ("http://192.168.1.11:6868/predict?value1=" + String(a[0], 2) + "&value2=" + String(a[1], 2) + "&value3=" + String(a[2], 2) + "&value4=" + String(a[3], 2) + "&value5=" + String(a[4], 2) + "&value6=" + String(a[5], 2) + "&value7=" + String(a[6], 2) + "&value8=" + String(a[7], 2) + "&value9=" + String(a[8], 2) + "&value10=" + String(a[9], 2));
-    Serial.println(test_code);
-    int httpCode = http.GET(); //Send the request
-    if (httpCode > 0)
-    { //Check the returning code
+        String payload = http.getString(); //Get the request response payload
+        Serial.println(payload);           //Print the response payload
+        int index1, index2, index3;
+        index1 = payload.indexOf("a");
+        index2 = payload.indexOf("b");
+        index3 = payload.indexOf("c");
 
-      String payload = http.getString(); //Get the request response payload
-      Serial.println(payload);           //Print the response payload
-      int index1, index2, index3;
-      index1 = payload.indexOf("a");
-      index2 = payload.indexOf("b");
-      index3 = payload.indexOf("c");
+        String data1, data2, data3;
+        data1 = payload.substring(0, index1);
+        data2 = payload.substring(index1 + 1, index2);
+        data3 = payload.substring(index2 + 1, index3);
 
-      String data1, data2, data3;
-      data1 = payload.substring(0, index1);
-      data2 = payload.substring(index1 + 1, index2);
-      data3 = payload.substring(index2 + 1, index3);
+        test_value = data1.toFloat();
+        pred_value = data2.toFloat();
+        mae = data3.toFloat();
 
-      test_value = data1.toFloat();
-      pred_value = data2.toFloat();
-      mae = data3.toFloat();
+        Serial.println(test_value);
+        Serial.println(pred_value);
+        Serial.println(mae);
 
-      Serial.println(test_value);
-      Serial.println(pred_value);
-      Serial.println(mae);
+        Blynk.virtualWrite(V70, test_value);
+        Blynk.virtualWrite(V71, pred_value);
+        Blynk.virtualWrite(V72, mae);
 
-      Blynk.virtualWrite(V70, test_value);
-      Blynk.virtualWrite(V71, pred_value);
-      Blynk.virtualWrite(V72, mae);
+        if (mae > threshold)
+        {
+          status_pH_sensor = "Anomaly_Detection";
+          Blynk.virtualWrite(V74, status_pH_sensor);
+          Blynk.notify("Phát hiện dữ liệu bất thường từ cảm biến pH");
+          led_alarm.on();
+          count++;
+          pre_count = 1;
+        }
+        else
+        {
+          status_pH_sensor = "Normal";
+          Blynk.virtualWrite(V74, status_pH_sensor);
+          led_alarm.off();
+          count = 0;
+        }
+        // Nếu phát hiện 3 bất thường liên tục thì đưa ra trạng thái dừng hệ thống
+        if (count == 3)
+        {
+          stop_system = 1;
+          led_stop_system.on();
+        }
+        else
+          stop_system = 0;
+          led_stop_system.off();
 
-      if (mae > threshold)
-      {
-        status_pH_sensor = "Anomaly_Detection";
-        Blynk.virtualWrite(V74, status_pH_sensor);
+        Serial.print("count");
+        Serial.println(count);
+        Serial.print("pre_count = ");
+        Serial.println(pre_count);
+        Serial.print("stop_system =");
+        Serial.println(stop_system);
       }
-      else
-      {
-        status_pH_sensor = "Normal";
-        Blynk.virtualWrite(V74, status_pH_sensor);
-      }
+
+      http.end(); //Close connection
     }
-
-    http.end(); //Close connection
   }
 }
 void peristaltic_pump() //pump_a = acid
@@ -945,23 +1011,26 @@ void peristaltic_pump() //pump_a = acid
 
   //float phValue = measure_ph();
   //Serial.println(phValue);
-  if (phValue < range_ph_low_danger)
+  if (stop_system == 0)
   {
-    digitalWrite(pump_b, HIGH); // add base solution
-    led_pump_base.on();
-    delay(TIME_PUMP_BASE_ON);
-    digitalWrite(pump_b, LOW);
-    led_pump_base.off();
-    Serial.println("add base");
-  }
-  else if (phValue > range_ph_high_danger)
-  {
-    digitalWrite(pump_a, HIGH); // add acid solution
-    led_pump_acid.on();
-    delay(TIME_PUMP_ACID_ON);
-    digitalWrite(pump_a, LOW);
-    led_pump_acid.off();
-    Serial.println("add acid");
+    if (phValue < range_ph_low_danger)
+    {
+      digitalWrite(pump_b, HIGH); // add base solution
+      led_pump_base.on();
+      delay(TIME_PUMP_BASE_ON);
+      digitalWrite(pump_b, LOW);
+      led_pump_base.off();
+      Serial.println("add base");
+    }
+    else if (phValue > range_ph_high_danger)
+    {
+      digitalWrite(pump_a, HIGH); // add acid solution
+      led_pump_acid.on();
+      delay(TIME_PUMP_ACID_ON);
+      digitalWrite(pump_a, LOW);
+      led_pump_acid.off();
+      Serial.println("add acid");
+    }
   }
 }
 
@@ -1045,7 +1114,7 @@ void setup()
   timer.setInterval(1000L, sendSensor);
   timer.setInterval(1000L, datevalue);
   timer.setInterval(60000L, send_data_to_googlesheet);
-  timer.setInterval(30000L, send_data_to_webserver);
+  timer.setInterval(5000L, send_data_to_webserver);
   timer.setInterval(5000L, peristaltic_pump);
   timer.setInterval(5000L, checkSchedule);
   attachInterrupt(digitalPinToInterrupt(photoresistor), growlight, CHANGE);
