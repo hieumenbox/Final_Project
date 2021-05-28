@@ -20,10 +20,7 @@
 #define photoresistor D7
 #define grow_light_pin D8
 
-
-
-#define float_sensor 9
-
+#define float_sensor D8
 
 #define pump 10
 
@@ -62,6 +59,10 @@ LiquidCrystal_I2C lcd(0x27, 20, 4);
 
 const char *ssid = "PNAnh";
 const char *password = "pnanh123";
+
+//const char *ssid = "My iphone";
+//const char *password = "12345678";
+
 //variable of array
 int temp;
 int n = 10;
@@ -494,14 +495,14 @@ void FlashWait() /*--(Subroutine, flashes "WAIT" for a delay)-------------------
 BLYNK_WRITE(V76)
 {
   status_calib = param.asInt();
-
+  delay(100);
   if (status_calib == 1)
   {
     step = step + 1;
     enable = 1;
     status_calib = 0;
   }
-
+  delay(1000);
   Serial.print("step:");
   Serial.println(step);
 
@@ -518,8 +519,17 @@ BLYNK_WRITE(V76)
   }
   else if ((step == 1) & (enable == 1))
   {
-    FlashWait(); //flash "WAIT" for 3 secs... subroutine
-
+    //FlashWait(); //flash "WAIT" for 3 secs... subroutine
+    for (int i = 0; i < 3; i++) //loop for 3 secs
+    {
+      lcd_blynk.clear();
+      //lcd.setCursor(8, 2);      //center of screen
+      lcd_blynk.print(6, 0, "WAIT"); //print wait
+      delay(200);                    //half second flash
+      //lcd.setCursor(8, 2);      //center of screen
+      lcd_blynk.print(6, 0, "           "); //clear "WAIT"
+      delay(200);                           //half second flash
+    }
     delay(50);         //quick delay
     lcd_blynk.clear(); //clear lcd screen
     lcd_blynk.print(1, 0, "Wait for calib");
@@ -527,12 +537,14 @@ BLYNK_WRITE(V76)
     for (double i = 10; i > 0; i--) //read values for 10 seconds
     {                               //read current pH value
       phValue = measure_ph();       //set equal to variable for this pH
+      delay(50);
       ph4val = 4.3;
       lcd_blynk.print(0, 0, "Time remain: "); //display time remaining
-      lcd_blynk.print(13, 0, i / 10);         //calculates the time left for calibration
+      lcd_blynk.print(13, 0, i);              //calculates the time left for calibration
 
       lcd_blynk.print(0, 1, "pH: ");  //display current reading
       lcd_blynk.print(5, 1, phValue); //current reading
+      delay(100);
     }
     delay(50); //quick delay
 
@@ -561,8 +573,17 @@ BLYNK_WRITE(V76)
   }
   else if ((step == 3) & (enable == 1))
   {
-    FlashWait(); //flash "WAIT" for 3 secs... subroutine
-
+    //FlashWait(); //flash "WAIT" for 3 secs... subroutine
+    for (int i = 0; i < 3; i++) //loop for 3 secs
+    {
+      lcd_blynk.clear();
+      //lcd.setCursor(8, 2);      //center of screen
+      lcd_blynk.print(6, 0, "WAIT"); //print wait
+      delay(100);                    //half second flash
+      //lcd.setCursor(8, 2);      //center of screen
+      lcd_blynk.print(6, 0, "           "); //clear "WAIT"
+      delay(100);                           //half second flash
+    }
     delay(50);         //quick delay
     lcd_blynk.clear(); //clear lcd screen
     lcd_blynk.print(1, 0, "Wait for calib");
@@ -570,12 +591,14 @@ BLYNK_WRITE(V76)
     for (double i = 10; i > 0; i--) //read values for 10 seconds
     {                               //read current pH value
       phValue = measure_ph();       //set equal to variable for this pH
+      delay(50);
       ph7val = 7.2;
       lcd_blynk.print(0, 0, "Time remain: "); //display time remaining
-      lcd_blynk.print(13, 0, i / 10);         //calculates the time left for calibration
+      lcd_blynk.print(13, 0, i);              //calculates the time left for calibration
 
       lcd_blynk.print(0, 1, "pH: ");  //display current reading
       lcd_blynk.print(5, 1, phValue); //current reading
+      delay(100);
     }
 
     delay(50);                              //quick delay
@@ -603,8 +626,17 @@ BLYNK_WRITE(V76)
   }
   else if ((step == 5) & (enable == 1))
   {
-    FlashWait(); //flash "WAIT" for 3 secs... subroutine
-
+    //FlashWait(); //flash "WAIT" for 3 secs... subroutine
+    for (int i = 0; i < 3; i++) //loop for 3 secs
+    {
+      lcd_blynk.clear();
+      //lcd.setCursor(8, 2);      //center of screen
+      lcd_blynk.print(6, 0, "WAIT"); //print wait
+      delay(100);                    //half second flash
+      //lcd.setCursor(8, 2);      //center of screen
+      lcd_blynk.print(6, 0, "           "); //clear "WAIT"
+      delay(100);                           //half second flash
+    }
     delay(50);         //quick delay
     lcd_blynk.clear(); //clear lcd screen
     lcd_blynk.print(1, 0, "Wait for calib");
@@ -612,12 +644,14 @@ BLYNK_WRITE(V76)
     for (double i = 10; i > 0; i--) //read values for 10 seconds
     {                               //read current pH value
       phValue = measure_ph();       //set equal to variable for this pH
+      delay(50);
       ph10val = 10.2;
       lcd_blynk.print(0, 0, "Time remain: "); //display time remaining
-      lcd_blynk.print(13, 0, i / 10);         //calculates the time left for calibration
+      lcd_blynk.print(13, 0, i);              //calculates the time left for calibration
 
       lcd_blynk.print(0, 1, "pH: ");  //display current reading
       lcd_blynk.print(5, 1, phValue); //current reading
+      delay(100);
     }
 
     delay(50); //quick delay
@@ -1009,9 +1043,9 @@ void setup()
   Serial.println(WiFi.gatewayIP());
   Blynk.begin(auth, ssid, password, IPAddress(192, 168, 1, 11), 8080);
   timer.setInterval(1000L, sendSensor);
-  timer.setInterval(10000L, datevalue);
-  timer.setInterval(10000L, send_data_to_googlesheet);
-  timer.setInterval(10000L, send_data_to_webserver);
+  timer.setInterval(1000L, datevalue);
+  timer.setInterval(60000L, send_data_to_googlesheet);
+  timer.setInterval(30000L, send_data_to_webserver);
   timer.setInterval(5000L, peristaltic_pump);
   timer.setInterval(5000L, checkSchedule);
   attachInterrupt(digitalPinToInterrupt(photoresistor), growlight, CHANGE);
