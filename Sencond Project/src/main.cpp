@@ -43,7 +43,7 @@
 //SimpleTimer timer;
 WidgetRTC rtc;
 WiFiClientSecure client;
-char auth[] = "wYQzdV9DOeIhA_sMkxroL_U7AslDK3dC";
+char auth[] = "plRGU9K5iD6nf2uH2fIhuCGV6PxdxCIi";
 //setup lcd
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 
@@ -57,8 +57,11 @@ LiquidCrystal_I2C lcd(0x27, 20, 4);
 //const char* ssid     = "The Coffee House";
 //const char* password = "thecoffeehouse";
 
-const char *ssid = "PNAnh";
-const char *password = "pnanh123";
+// const char *ssid = "PNAnh";
+// const char *password = "pnanh123";
+
+const char *ssid = "Tri Hieu";
+const char *password = "01246914237";
 
 //const char *ssid = "My iphone";
 //const char *password = "12345678";
@@ -955,9 +958,9 @@ void send_data_to_webserver()
     { //Check WiFi connection status
 
       HTTPClient http; //Declare an object of class HTTPClient
-      http.begin("http://192.168.1.11:6868/predict?value1=" + String(a[0], 2) + "&value2=" + String(a[1], 2) + "&value3=" + String(a[2], 2) + "&value4=" + String(a[3], 2) + "&value5=" + String(a[4], 2) + "&value6=" + String(a[5], 2) + "&value7=" + String(a[6], 2) + "&value8=" + String(a[7], 2) + "&value9=" + String(a[8], 2) + "&value10=" + String(a[9], 2));
+      http.begin("http://192.168.1.5:6868/predict?value1=" + String(a[0], 2) + "&value2=" + String(a[1], 2) + "&value3=" + String(a[2], 2) + "&value4=" + String(a[3], 2) + "&value5=" + String(a[4], 2) + "&value6=" + String(a[5], 2) + "&value7=" + String(a[6], 2) + "&value8=" + String(a[7], 2) + "&value9=" + String(a[8], 2) + "&value10=" + String(a[9], 2));
       String test_code;
-      test_code = ("http://192.168.1.11:6868/predict?value1=" + String(a[0], 2) + "&value2=" + String(a[1], 2) + "&value3=" + String(a[2], 2) + "&value4=" + String(a[3], 2) + "&value5=" + String(a[4], 2) + "&value6=" + String(a[5], 2) + "&value7=" + String(a[6], 2) + "&value8=" + String(a[7], 2) + "&value9=" + String(a[8], 2) + "&value10=" + String(a[9], 2));
+      test_code = ("http://192.168.1.5:6868/predict?value1=" + String(a[0], 2) + "&value2=" + String(a[1], 2) + "&value3=" + String(a[2], 2) + "&value4=" + String(a[3], 2) + "&value5=" + String(a[4], 2) + "&value6=" + String(a[5], 2) + "&value7=" + String(a[6], 2) + "&value8=" + String(a[7], 2) + "&value9=" + String(a[8], 2) + "&value10=" + String(a[9], 2));
       Serial.println(test_code);
       int httpCode = http.GET(); //Send the request
       if (httpCode > 0)
@@ -1131,7 +1134,7 @@ void setup()
   Serial.println(WiFi.subnetMask());
   Serial.print("Gateway: ");
   Serial.println(WiFi.gatewayIP());
-  Blynk.begin(auth, ssid, password, IPAddress(192, 168, 1, 11), 8080);
+  Blynk.begin(auth, ssid, password, IPAddress(192, 168, 1, 5), 8080);
   timer.setInterval(1000L, sendSensor);
   timer.setInterval(1000L, datevalue);
   timer.setInterval(60000L, send_data_to_googlesheet);
