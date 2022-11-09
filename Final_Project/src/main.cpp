@@ -48,15 +48,6 @@ char auth[] = "wYQzdV9DOeIhA_sMkxroL_U7AslDK3dC";
 LiquidCrystal_I2C lcd(0x27,20,4);
 
 //ssid-password
-//const char* ssid     = "Internal";
-//const char* password = "Passio@2021";
-
-//const char* ssid     = "PassioCoffee";
-//const char* password = "19009434";
-
-//const char* ssid     = "The Coffee House";
-//const char* password = "thecoffeehouse";
-
 const char* ssid     = "PNAnh";
 const char* password = "pnanh123";
 //variable of array
